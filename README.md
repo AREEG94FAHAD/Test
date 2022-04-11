@@ -29,3 +29,91 @@ Return the number of sawtooth subarrays.
 Guaranteed constraints:
 **2 ≤ arr.length ≤ 105,**
 **-109 ≤ arr[i] ≤ 109.**
+
+```sh
+def solution(inputArray):
+    if len(inputArray) in [0, 1]:
+        return 0
+    if len(inputArray) == 2 and (
+            inputArray[0] > inputArray[1] or inputArray[1] > inputArray[0]):
+        return 1
+    sawCount = 0
+    for i in range(len(inputArray)):
+        prev = inputArray[i]
+        pattern = "-"
+        for j in range(i + 1, len(inputArray)):
+            if inputArray[j] > prev and pattern in ["-", "down"]:
+                sawCount += 1
+                pattern = "up"
+
+            elif inputArray[j] < prev and pattern in ["-", "up"]:
+                sawCount += 1
+                pattern = "down"
+            else:
+                break
+            prev = inputArray[j]
+    return sawCount
+
+print(solution([1, 2, 1, 2, 1]))
+print(solution([-14, -10, -20, -8, -10, 3, 2, 5, 5, 4, 6, 2, 3]))
+print(solution([9, 8, 7, 6, 5]))
+print(solution([-14, -10, -20, -8, -10, 3, 2, 5, 5, 4]))
+
+
+```
+
+[O(n)](https://vigges.net/qa/?qa=115994/) 
+```sh
+function sawSequenceImprove(number) {
+    // best case
+    if (number.length === 0 || number.length === 1) {
+        return 0
+    }
+    
+    if (number.length === 2 && ( number[0] > number[1] || number[1] > number[0])) {
+        return 1
+    }
+    
+    let sawCount = 0;
+    if (number[0] > number[1] || number[1] > number[0]) {
+        sawCount = 1;
+    }
+    let count = 0;
+    let isLastConsArr = false;
+    let startIndex = 0;
+    for (let i = 2; i < number.length; i++) {
+      // check sequence / and /
+      if (
+          (i - 2) >= 0 && 
+          ((number[i - 2] < number[i - 1] && number[i - 1] > number[i]) ||
+          (number[i - 2] > number[i - 1] && number[i - 1] < number[i]))
+        ) {
+        count += (2 + startIndex);
+        const isDown = number[i - 1] > number[i];
+        //checking last condition
+        if (number[i] === number[i + 1] || 
+            (isDown && number[i] > number[i+1]) || 
+            (!isDown && number[i] < number[i+1]) || 
+            (i + 1 === number.length)) {
+            isLastConsArr = true
+        }
+        startIndex += 1
+      }
+      else if (number[i - 1] > number[i] || number[i - 1] < number[i]) {
+          sawCount += 1
+          count = 0
+      }
+      
+      if (isLastConsArr) {
+        sawCount += count
+        isLastConsArr = false
+        startIndex = 0
+      }
+    }
+    return sawCount
+}
+console.log(sawSequenceImprove([-14, -10, -20, -8, -10, 3, 2, 5, 5, 4, 6, 2, 3]))
+console.log(sawSequenceImprove([1, 2, 1, 3, 2]))
+console.log(sawSequenceImprove([9, 8, 7, 6, 5]))
+console.log(sawSequenceImprove([-14, -10, -20, -8, -10, 3, 2, 5, 5, 4]))
+```
